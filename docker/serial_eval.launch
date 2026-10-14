@@ -1,0 +1,40 @@
+<launch>
+    <!-- 基于官方 ov_srvins/launch/serial.launch：去掉 GT 可视化与 pose_to_file 订阅录制，
+         改为 save_total_state 直接写文件（serial 回放不丢帧）。
+         init_window_time / max_cameras / use_stereo 不在此覆盖，由 config yaml 决定；
+         其余参数保持 serial.launch 的官方默认值。
+         话题名由 kalibr_*.yaml 的 rostopic 决定（parse_external 会覆盖 topic_* 参数）。 -->
+    <arg name="config_path" />
+    <arg name="bag" />
+    <arg name="path_est"   default="/output/state_estimate.txt" />
+    <arg name="bag_start"  default="0.0" />
+    <arg name="bag_durr"   default="-1" />
+    <arg name="verbosity"  default="INFO" />
+
+    <node name="ov_srvins" pkg="ov_srvins" type="ros1_serial_msckf" output="screen" clear_params="true" required="true">
+        <param name="seed"            type="int"    value="1" />
+        <param name="path_bag"        type="str"    value="$(arg bag)" />
+        <param name="bag_start"       type="double" value="$(arg bag_start)" />
+        <param name="bag_durr"        type="double" value="$(arg bag_durr)" />
+        <param name="verbosity"       type="str"    value="$(arg verbosity)" />
+        <param name="config_path"     type="str"    value="$(arg config_path)" />
+        <param name="record_timing_information" type="bool" value="false" />
+
+        <!-- serial.launch 官方默认覆盖项 -->
+        <param name="init_dyn_num_pose"     type="int"  value="5" />
+        <param name="use_bg_estimator"      type="bool" value="false" />
+        <param name="use_fej"               type="bool" value="true" />
+        <param name="init_dyn_mle_max_iter" type="int"  value="10" />
+        <param name="init_max_features"     type="int"  value="200" />
+        <param name="init_max_slam"         type="int"  value="50" />
+        <param name="init_max_feat"         type="int"  value="50" />
+        <param name="record_init_pose"      type="bool" value="false" />
+        <param name="record_init_timing"    type="bool" value="false" />
+
+        <!-- 轨迹输出：timestamp(IMU clock) q_GtoI(JPL xyzw) p_IinG v bg ba ... -->
+        <param name="save_total_state" type="bool" value="true" />
+        <param name="filepath_est"     type="str"  value="$(arg path_est)" />
+        <param name="filepath_std"     type="str"  value="/tmp/state_std.txt" />
+        <param name="filepath_gt"      type="str"  value="/tmp/state_gt.txt" />
+    </node>
+</launch>
