@@ -1,5 +1,5 @@
 # sqrtVINS (ROS1 Noetic, Ubuntu 20.04) — 离线 serial 回放 rosbag（ros1_serial_msckf）
-# 构建: cd /home/lee/sqrtVINS && docker build -f docker/Dockerfile -t sqrtvins:latest .
+# 构建: cd /home/lee/baselines/sqrtVINS && docker build -f docker/Dockerfile -t sqrtvins:latest .
 # 依赖参照仓库根目录 Dockerfile_ros1_20_04（去掉 clion/sshd 部分，基于 perception 镜像以复用 cv_bridge/tf）
 FROM ros:noetic-perception
 
